@@ -16,7 +16,7 @@
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"uranus.economyplayershop.ExampleMod"
+			"uranus.economyplayershop.PlayerShopMain"
 		],
 		"client": [
 			"uranus.economyplayershop.ExampleModClient"
