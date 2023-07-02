@@ -32,6 +32,8 @@ repositories {
 		name 'Polymer'
 		url 'https://maven.nucleoid.xyz'
 	}
+	//maven for EULA API
+	maven { url "https://api.modrinth.com/maven" }
 }
 
 loom {
@@ -72,6 +74,9 @@ dependencies {
 
 	// HologramAPI
 	modImplementation include("eu.pb4:hologram-api:0.2.2+1.19")
+
+	//EasyEULA
+	modImplementation("maven.modrinth:easy-eula:1.0.0")
 }
 
 processResources {
