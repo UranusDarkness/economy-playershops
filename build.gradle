@@ -40,7 +40,7 @@ loom {
     splitEnvironmentSourceSets()
 
 	mods {
-		"economy-sign-shop" {
+		"economy-player-shop" {
 			sourceSet sourceSets.main
 			sourceSet sourceSets.client
 		}

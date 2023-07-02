@@ -1,4 +1,4 @@
-package uranus.economysignshop;
+package uranus.economyplayershop;
 
 import net.fabricmc.api.ClientModInitializer;
 

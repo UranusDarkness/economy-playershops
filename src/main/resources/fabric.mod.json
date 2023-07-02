@@ -1,6 +1,6 @@
 {
 	"schemaVersion": 1,
-	"id": "economy-sign-shop",
+	"id": "economy-player-shop",
 	"version": "${version}",
 	"name": "Economy Sign Shop",
 	"description": "This is an example description! Tell everyone what your mod is about!",
@@ -12,20 +12,20 @@
 		"sources": "https://github.com/FabricMC/fabric-example-mod"
 	},
 	"license": "CC0-1.0",
-	"icon": "assets/economy-sign-shop/icon.png",
+	"icon": "assets/economy-player-shop/icon.png",
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"uranus.economysignshop.ExampleMod"
+			"uranus.economyplayershop.ExampleMod"
 		],
 		"client": [
-			"uranus.economysignshop.ExampleModClient"
+			"uranus.economyplayershop.ExampleModClient"
 		]
 	},
 	"mixins": [
-		"economy-sign-shop.mixins.json",
+		"economy-player-shop.mixins.json",
 		{
-			"config": "economy-sign-shop.client.mixins.json",
+			"config": "economy-player-shop.client.mixins.json",
 			"environment": "client"
 		}
 	],

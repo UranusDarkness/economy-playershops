@@ -1,4 +1,4 @@
-package uranus.economysignshop.mixin;
+package uranus.economyplayershop.mixin;
 
 import net.minecraft.server.MinecraftServer;
 import org.spongepowered.asm.mixin.Mixin;

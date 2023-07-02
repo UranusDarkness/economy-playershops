@@ -1,9 +1,9 @@
 {
 	"required": true,
-	"package": "uranus.economysignshop.mixin",
+	"package": "uranus.economyplayershop.mixin.client",
 	"compatibilityLevel": "JAVA_17",
-	"mixins": [
-		"ExampleMixin"
+	"client": [
+		"ExampleClientMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
