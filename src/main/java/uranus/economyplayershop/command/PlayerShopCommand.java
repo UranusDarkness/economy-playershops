@@ -1,6 +1,7 @@
 package uranus.economyplayershop.command;
 
 import com.mojang.brigadier.context.CommandContext;
+import net.minecraft.command.argument.ItemStackArgument;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
@@ -9,8 +10,12 @@ import uranus.economyplayershop.common.CommonShopData;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
+import static com.mojang.brigadier.arguments.DoubleArgumentType.getDouble;
+import static com.mojang.brigadier.arguments.IntegerArgumentType.getInteger;
+import static net.minecraft.command.argument.ItemStackArgumentType.getItemStackArgument;
 
 
 public class PlayerShopCommand {
@@ -34,7 +39,12 @@ public class PlayerShopCommand {
     public static int set(CommandContext<ServerCommandSource> context) {
         ServerPlayerEntity player = context.getSource().getPlayer();
         if (CommonShopData.getByPlayer(player) != null) {
-            context.getSource().sendFeedback(Text.literal(String.format("Please wait %d seconds between requests to set up another shop", SHOP_CONFIG_TIMEOUT)).formatted(Formatting.RED), false);            return -1;
+            context.getSource().sendFeedback(
+                    Text.literal(
+                            String.format("Please wait %d seconds between requests to set up another shop", SHOP_CONFIG_TIMEOUT)
+                    ).formatted(Formatting.RED), false
+            );
+            return -1;
         }
 
         String msg = "Right click on your chest to set the player shop";
@@ -43,13 +53,13 @@ public class PlayerShopCommand {
         System.out.println("Adding player request for shop configuration to list");
 
         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-        scheduler.schedule(() -> {
-            context.getSource().sendFeedback(Text.literal("Your request to set up a shop has expired.").formatted(Formatting.RED), true);
+        ScheduledFuture<?> future = scheduler.schedule(() -> {
+            context.getSource().sendFeedback(Text.literal("Your request to set up a shop has expired.").formatted(Formatting.RED), false);
             CommonShopData.removeByPlayer(player);
         }, SHOP_CONFIG_TIMEOUT, TimeUnit.SECONDS);
         System.out.println("Scheduling removal in 10 seconds/on chest click");
 
-        CommonShopData.addRequest(player, scheduler);
+        CommonShopData.addRequest(player, future, context);
         return 1;
         /*ServerPlayerEntity playerEntity = context.getSource().getPlayer();
 
