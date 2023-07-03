@@ -26,8 +26,8 @@ public class PlayerShopCommand {
         ItemStackArgument artg = getItemStackArgument(context, "item");
         String msg = String.format("PlayerShop settato con %s %d %.2f", artg.asString(), getInteger(context, "quantity"), getDouble(context, "price"));
         context.getSource().sendFeedback(Text.literal(msg).formatted(Formatting.GREEN), true);
-        return 1;
 
+        return 1;
         /*ServerPlayerEntity playerEntity = context.getSource().getPlayer();
 
         WorldHologram hologram = new WorldHologram(playerEntity.getWorld(), playerEntity.getPos());
