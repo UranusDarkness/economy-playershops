@@ -1,2 +1,2 @@
-# economy-signshops
-A server-side Sign Shop mod for Fabric
+# economy-playershops
+A server-side Player Shop mod for Fabric
