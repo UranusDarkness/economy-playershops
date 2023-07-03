@@ -47,7 +47,7 @@ public class PlayerShopCommand {
             return -1;
         }
 
-        String msg = String.format("Right click on your chest to set the player shop");
+        String msg = "Right click on your chest to set the player shop";
         context.getSource().sendFeedback(Text.literal(msg).formatted(Formatting.YELLOW), false);
 
         System.out.println("Adding player request for shop configuration to list");
