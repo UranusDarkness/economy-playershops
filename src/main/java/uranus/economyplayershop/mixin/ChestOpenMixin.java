@@ -19,6 +19,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import uranus.economyplayershop.common.CommonShopData;
+import uranus.economyplayershop.common.HologramBuilderHandler;
 import uranus.economyplayershop.common.ShopRequest;
 
 @Mixin(ChestBlockEntity.class)
@@ -38,12 +39,14 @@ public class ChestOpenMixin extends BlockEntity {
             CommandContext<ServerCommandSource> context = playerRequest.getPlayerContext();
             ItemStackArgument item = ItemStackArgumentType.getItemStackArgument(context, "item");
             String msg = String.format(
-                    "PlayerShop settato con %s %d %.2f",
-                    item.asString(),
+                    "Player shop set for %d %s at %.2f",
                     IntegerArgumentType.getInteger(context, "quantity"),
+                    item.asString(),
                     DoubleArgumentType.getDouble(context, "price")
             );
             context.getSource().sendFeedback(Text.literal(msg).formatted(Formatting.GREEN), true);
+            HologramBuilderHandler hologramBuilderHandler = new HologramBuilderHandler();
+            hologramBuilderHandler.HologramBuilder(context, blockPos);
 
             System.out.printf("Accepting %s's request to setup their shop\n", player.getName().getString());
             CommonShopData.removeByPlayer(player);
