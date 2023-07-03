@@ -42,6 +42,7 @@ public class PlayerShopMain implements ModInitializer {
 				dispatcher.getRoot().addChild(playerShopNode);
 				playerShopNode.addChild(setNode);
 
+
 			}
 		});
 	}
