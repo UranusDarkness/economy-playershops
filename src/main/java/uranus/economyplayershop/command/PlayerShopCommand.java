@@ -1,17 +1,30 @@
 package uranus.economyplayershop.command;
-import static com.mojang.brigadier.arguments.DoubleArgumentType.getDouble;
-import static com.mojang.brigadier.arguments.IntegerArgumentType.getInteger;
-import static net.minecraft.command.argument.ItemStackArgumentType.getItemStackArgument;
+
 import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.command.argument.ItemStackArgument;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import uranus.economyplayershop.common.CommonShopData;
+
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
+import static com.mojang.brigadier.arguments.DoubleArgumentType.getDouble;
+import static com.mojang.brigadier.arguments.IntegerArgumentType.getInteger;
+import static net.minecraft.command.argument.ItemStackArgumentType.getItemStackArgument;
 
 
 public class PlayerShopCommand {
     //static int pos = -1;
     //static int pos2 = 1;
+    /**
+     * Timeout in seconds after which shop config requests becomes stale
+     */
+    final static int SHOP_CONFIG_TIMEOUT = 10;
+
     public static int base(CommandContext<ServerCommandSource> context) {
         context.getSource().sendFeedback(Text.literal("Economy PlayerShop by UranusDarkness & ShinusThePanther").formatted(Formatting.YELLOW), false);
         return 1;
@@ -23,10 +36,25 @@ public class PlayerShopCommand {
     }
 
     public static int set(CommandContext<ServerCommandSource> context) {
+        ServerPlayerEntity player = context.getSource().getPlayer();
+        if (CommonShopData.getByPlayer(player) != null) {
+            context.getSource().sendFeedback(Text.literal(String.format("Please wait %d seconds between requests to set up another shop", SHOP_CONFIG_TIMEOUT)).formatted(Formatting.RED), false);            return -1;
+        }
+
         ItemStackArgument artg = getItemStackArgument(context, "item");
         String msg = String.format("PlayerShop settato con %s %d %.2f", artg.asString(), getInteger(context, "quantity"), getDouble(context, "price"));
         context.getSource().sendFeedback(Text.literal(msg).formatted(Formatting.GREEN), true);
 
+        System.out.println("Adding player request for shop configuration to list");
+
+        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+        scheduler.schedule(() -> {
+            context.getSource().sendFeedback(Text.literal(String.format("Your request to set up a shop has expired.", SHOP_CONFIG_TIMEOUT)).formatted(Formatting.RED), true);
+            CommonShopData.removeByPlayer(player);
+        }, SHOP_CONFIG_TIMEOUT, TimeUnit.SECONDS);
+        System.out.println("Scheduling removal in 10 seconds/on chest click");
+
+        CommonShopData.addRequest(player, scheduler);
         return 1;
         /*ServerPlayerEntity playerEntity = context.getSource().getPlayer();
 

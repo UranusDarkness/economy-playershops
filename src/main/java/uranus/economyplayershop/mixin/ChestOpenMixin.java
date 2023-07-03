@@ -10,6 +10,8 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import uranus.economyplayershop.common.CommonShopData;
+import uranus.economyplayershop.common.ShopRequest;
 
 @Mixin(ChestBlockEntity.class)
 public class ChestOpenMixin extends BlockEntity {
@@ -23,6 +25,12 @@ public class ChestOpenMixin extends BlockEntity {
     protected void injectOnOpen(PlayerEntity player, CallbackInfo ci){
         BlockPos blockPos = this.getPos();
         System.out.println(String.format("x: %d y: %d z: %d", blockPos.getX(), blockPos.getY(), blockPos.getZ()));
+
+        ShopRequest playerRequest = CommonShopData.getByPlayer(player);
+        if (playerRequest != null) {
+            System.out.printf("Accepting %s's request to setup their shop\n", player.getName().getString());
+            CommonShopData.removeByPlayer(player);
+        }
     }
 
 }
