@@ -45,6 +45,7 @@ public class ChestOpenMixin extends BlockEntity {
                     DoubleArgumentType.getDouble(context, "price")
             );
             context.getSource().sendFeedback(Text.literal(msg).formatted(Formatting.GREEN), true);
+
             HologramBuilderHandler hologramBuilderHandler = new HologramBuilderHandler();
             hologramBuilderHandler.HologramBuilder(context, blockPos);
 

@@ -6,7 +6,7 @@ import net.minecraft.text.Text;
 
 public class AdminPlayerShopCommand {
     public static int set(CommandContext<ServerCommandSource> context) {
-        context.getSource().sendMessage(Text.literal("Admin player shop set"));
+        context.getSource().sendFeedback(Text.literal("Admin player shop set"), true);
         return 1;
     }
 }

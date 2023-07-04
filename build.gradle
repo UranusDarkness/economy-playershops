@@ -20,6 +20,7 @@ repositories {
 		name 'Fabric Permission API'
 		url 'https://oss.sonatype.org/content/repositories/snapshots'
 	}
+
 	maven {
 		name 'Cloth Config'
 		url 'https://maven.shedaniel.me/'
@@ -28,6 +29,7 @@ repositories {
 		name 'Mod Menu'
 		url 'https://maven.terraformersmc.com/releases/'
 	}
+
 	maven {
 		name 'Hologram API & Common Protection API'
 		url 'https://maven.nucleoid.xyz'
@@ -68,22 +70,20 @@ dependencies {
 	// Approach #1: Ensure fabric-permissions-api is always available by including it within your own jar (it's only ~8KB!)
 	include(modImplementation('me.lucko:fabric-permissions-api:0.2-SNAPSHOT'))
 
-	// Grand Economy API
-	/*modCompileOnly "dev.the-fireplace:Grand-Economy-Fabric:${project.grandeconomy_version}:api"
-	modRuntimeOnly "dev.the-fireplace:Grand-Economy-Fabric:${project.grandeconomy_version}"
-
-	// Common Fireplace-lib API
-	modCompileOnly "dev.the-fireplace:Fireplace-Lib-Fabric:${project.fireplacelib_version}:api"
-	modRuntimeOnly "dev.the-fireplace:Fireplace-Lib-Fabric:${project.fireplacelib_version}"*/
-
 	// Common Protection API
 	modImplementation include("eu.pb4:common-protection-api:1.0.0")
 
 	// HologramAPI
 	modImplementation include("eu.pb4:hologram-api:0.2.2+1.19")
 
-	//EasyEULA
-	modImplementation("maven.modrinth:easy-eula:1.0.0")
+	modCompileOnly "dev.the-fireplace:Fireplace-Lib-Fabric:${project.fireplacelib_version}:api"
+	modRuntimeOnly "dev.the-fireplace:Fireplace-Lib-Fabric:${project.fireplacelib_version}"
+
+	modImplementation "dev.the-fireplace:Annotated-DI-Fabric:${project.annotateddi_version}"
+	annotationProcessor "dev.the-fireplace:Annotated-DI-Fabric-Processor:${project.annotateddi_version}"
+
+	modCompileOnly "dev.the-fireplace:Grand-Economy-Fabric:${project.grandeconomy_version}:api"
+	modRuntimeOnly "dev.the-fireplace:Grand-Economy-Fabric:${project.grandeconomy_version}"
 }
 
 processResources {
