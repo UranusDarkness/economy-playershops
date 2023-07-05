@@ -23,7 +23,7 @@ public class HologramBuilderHandler {
 
     String msg;
 
-    public void HologramBuilder(CommandContext<ServerCommandSource> context, BlockPos blockPos){
+    public void HologramBuild(CommandContext<ServerCommandSource> context, BlockPos blockPos){
         ServerPlayerEntity playerEntity = context.getSource().getPlayer();
         //Entity entity = playerEntity;
         WorldHologram hologram = new WorldHologram(playerEntity.getWorld(), new Vec3d(blockPos.getX()+0.5, blockPos.getY()+1, blockPos.getZ()+0.5));
@@ -41,7 +41,7 @@ public class HologramBuilderHandler {
         hologram.addText(Text.literal(msg));
 
         msg = String.format("%.2f", DoubleArgumentType.getDouble(context, "price"));
-        hologram.addText(Text.literal(msg+" $").formatted(Formatting.GREEN));
+        hologram.addText(Text.literal(msg+"$").formatted(Formatting.GREEN));
 
         hologram.addElement(new CubeHitboxHologramElement(2, new Vec3d(0, 0.1, 0)) {
             @Override
@@ -50,17 +50,17 @@ public class HologramBuilderHandler {
                 EconomyTransactionHandler economyTransactionHandler = new EconomyTransactionHandler();
 
                 int purchaseresult = economyTransactionHandler.buyFromPlayerShop(context, playerEntity, player, DoubleArgumentType.getDouble(context, "price"),
-                        item, IntegerArgumentType.getInteger(context, "quantity"));
+                        item, IntegerArgumentType.getInteger(context, "quantity"), blockPos);
 
                 if(purchaseresult >= 0){
-                    player.sendMessage(Text.literal("Acquisto effettuato con successo!").formatted(Formatting.GREEN), false);
+                    player.sendMessage(Text.literal("Purchase successful!").formatted(Formatting.GREEN), false);
 
                     playerEntity.sendMessage(Text.literal(player.getEntityName()+
-                            " ha comprato dal tuo shop. Ti sono stati accreditati " + msg + " $").formatted(Formatting.GREEN));
+                            " bought from your shop. " + msg + "$ "+ "has been added to your account.").formatted(Formatting.GREEN));
 
                 }
                 else {
-                    player.sendMessage(Text.literal("Acquisto fallito!").formatted(Formatting.RED), false);
+                    player.sendMessage(Text.literal("Purchase failed!").formatted(Formatting.RED), false);
                 }
                 //hologram.setElement(1, new EntityHologramElement(getEntityType(type == InteractionType.ATTACK).create(playerEntity.world)));
             }
@@ -68,5 +68,6 @@ public class HologramBuilderHandler {
 
 
         hologram.show();
+
     }
 }

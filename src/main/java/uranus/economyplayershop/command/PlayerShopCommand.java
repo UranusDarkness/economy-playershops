@@ -43,14 +43,12 @@ public class PlayerShopCommand {
         String msg = "Right click on your chest to set the player shop";
         context.getSource().sendFeedback(Text.literal(msg).formatted(Formatting.YELLOW), false);
 
-        System.out.println("Adding player request for shop configuration to list");
 
         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
         ScheduledFuture<?> future = scheduler.schedule(() -> {
             context.getSource().sendFeedback(Text.literal("Your request to set up a shop has expired.").formatted(Formatting.RED), false);
             CommonShopData.removeByPlayer(player);
         }, SHOP_CONFIG_TIMEOUT, TimeUnit.SECONDS);
-        System.out.println("Scheduling removal in 10 seconds/on chest click");
 
         CommonShopData.addRequest(player, future, context);
         return 1;

@@ -32,7 +32,6 @@ public class ChestOpenMixin extends BlockEntity {
     @Inject(method = "onOpen", at = @At("HEAD"))
     protected void injectOnOpen(PlayerEntity player, CallbackInfo ci){
         BlockPos blockPos = this.getPos();
-        //System.out.println(String.format("x: %d y: %d z: %d", blockPos.getX(), blockPos.getY(), blockPos.getZ()));
 
         ShopRequest playerRequest = CommonShopData.getByPlayer(player);
         if (playerRequest != null) {
@@ -47,7 +46,7 @@ public class ChestOpenMixin extends BlockEntity {
             context.getSource().sendFeedback(Text.literal(msg).formatted(Formatting.GREEN), true);
 
             HologramBuilderHandler hologramBuilderHandler = new HologramBuilderHandler();
-            hologramBuilderHandler.HologramBuilder(context, blockPos);
+            hologramBuilderHandler.HologramBuild(context, blockPos);
 
             System.out.printf("Accepting %s's request to setup their shop\n", player.getName().getString());
             CommonShopData.removeByPlayer(player);
