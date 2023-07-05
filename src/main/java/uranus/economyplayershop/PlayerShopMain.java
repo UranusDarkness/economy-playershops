@@ -31,7 +31,7 @@ public class PlayerShopMain implements ModInitializer {
 				LiteralCommandNode<ServerCommandSource> playerShopNode = CommandManager.literal("playershop").executes(PlayerShopCommand::base).build();
 				LiteralCommandNode<ServerCommandSource> setNode = CommandManager.literal("set")
 						.then(CommandManager.argument("item", ItemStackArgumentType.itemStack(registryAccess)).executes(PlayerShopCommand::usage)
-								.then(CommandManager.argument("quantity", IntegerArgumentType.integer()).executes(PlayerShopCommand::usage)
+								.then(CommandManager.argument("quantity", IntegerArgumentType.integer(1)).executes(PlayerShopCommand::usage)
 										.then(CommandManager.argument("price", DoubleArgumentType.doubleArg(0.0)).executes(PlayerShopCommand::set))))
 
 						.executes(PlayerShopCommand::usage).build();

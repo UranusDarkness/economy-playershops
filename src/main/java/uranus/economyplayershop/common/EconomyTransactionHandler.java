@@ -28,7 +28,7 @@ public class EconomyTransactionHandler {
                 //add to seller's balance
                 economy.addToBalance(seller.getUuid(), DoubleArgumentType.getDouble(context, "price"), true);
                 //add to buyer's inventory
-                buyer.getInventory().insertStack(new ItemStack(item, quantity));
+                buyer.getInventory().offerOrDrop(new ItemStack(item, quantity));
                 return 1;
             }
             else
@@ -37,7 +37,6 @@ public class EconomyTransactionHandler {
         else {
             return -1;
         }
-
     }
 
     public int getItemStackFromChest(ChestBlockEntity chest, Item itemToRemove, int quantity){
