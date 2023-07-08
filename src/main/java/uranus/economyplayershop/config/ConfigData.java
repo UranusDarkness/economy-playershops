@@ -7,11 +7,10 @@ public class ConfigData {
     public ConfigData(String sqliteDatabaseLocation, String databaseName) {
         this.sqliteDatabaseLocation = sqliteDatabaseLocation;
         this.databaseName = databaseName;
-        ConfigManager.loadConfig();
     }
 
     public ConfigData() {
-        this("economyplayershop-sqlite.db", "Shops");
+        this("economyplayershop-sqlite.db", "shops");
     }
 
     public DbConfig getDatabaseConfig() {

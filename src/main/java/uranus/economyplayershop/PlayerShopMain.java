@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import uranus.economyplayershop.command.AdminPlayerShopCommand;
 import uranus.economyplayershop.command.PlayerShopCommand;
 import uranus.economyplayershop.config.ConfigData;
+import uranus.economyplayershop.config.ConfigManager;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -48,6 +49,9 @@ public class PlayerShopMain implements ModInitializer {
 			}
 		});
 
+		if (!ConfigManager.loadConfig()) {
+			throw new RuntimeException("Couldn't create database configuration. Exiting...");
+		}
 		initializeDatabase();
 
 	}
@@ -56,8 +60,10 @@ public class PlayerShopMain implements ModInitializer {
 		Connection db = null;
 		try {
 			ConfigData configData = new ConfigData();
-			String conn = "jdbc:sqlite:"+configData.databaseName;
+			String conn = "jdbc:sqlite:"+configData.sqliteDatabaseLocation;
 			db = DriverManager.getConnection(conn);
+			if (db == null)
+				throw new RuntimeException("Couldn't establish connection with the database. Exiting...");
 			System.out.println("Connection to SQLite has been established.");
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
