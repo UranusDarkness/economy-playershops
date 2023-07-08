@@ -3,6 +3,7 @@ package uranus.economyplayershop.mixin;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
+import eu.pb4.holograms.api.holograms.WorldHologram;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
@@ -20,7 +21,10 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import uranus.economyplayershop.common.CommonShopData;
 import uranus.economyplayershop.common.HologramBuilderHandler;
+import uranus.economyplayershop.common.ShopLoader;
 import uranus.economyplayershop.common.ShopRequest;
+
+import java.util.LinkedList;
 
 @Mixin(ChestBlockEntity.class)
 public class ChestOpenMixin extends BlockEntity {
@@ -46,7 +50,10 @@ public class ChestOpenMixin extends BlockEntity {
             context.getSource().sendFeedback(Text.literal(msg).formatted(Formatting.GREEN), true);
 
             HologramBuilderHandler hologramBuilderHandler = new HologramBuilderHandler();
-            hologramBuilderHandler.HologramBuild(context, blockPos);
+            WorldHologram worldHologram = hologramBuilderHandler.HologramBuild(context, blockPos);
+
+            ShopLoader shopLoader = new ShopLoader(worldHologram, player, item.getItem(), DoubleArgumentType.getDouble(context, "price"), IntegerArgumentType.getInteger(context, "quantity"));
+            ((LinkedList<ShopLoader>)ShopLoader.allShops).addLast(shopLoader);
 
             System.out.printf("Accepting %s's request to setup their shop\n", player.getName().getString());
             CommonShopData.removeByPlayer(player);

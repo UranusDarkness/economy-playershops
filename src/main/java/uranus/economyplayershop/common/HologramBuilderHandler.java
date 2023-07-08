@@ -22,11 +22,16 @@ import org.jetbrains.annotations.Nullable;
 public class HologramBuilderHandler {
 
     String msg;
+    WorldHologram hologram;
 
-    public void HologramBuild(CommandContext<ServerCommandSource> context, BlockPos blockPos){
+    public static final double X_OFFSET = 0.5;
+    public static final int Y_OFFSET = 1;
+    public static final double Z_OFFSET = 0.5;
+
+    public WorldHologram HologramBuild(CommandContext<ServerCommandSource> context, BlockPos blockPos){
         ServerPlayerEntity playerEntity = context.getSource().getPlayer();
         //Entity entity = playerEntity;
-        WorldHologram hologram = new WorldHologram(playerEntity.getWorld(), new Vec3d(blockPos.getX()+0.5, blockPos.getY()+1, blockPos.getZ()+0.5));
+        hologram = new WorldHologram(playerEntity.getWorld(), new Vec3d(blockPos.getX()+X_OFFSET, blockPos.getY()+Y_OFFSET, blockPos.getZ()+Z_OFFSET));
         //System.out.println(entity.getEntityName());
         if(playerEntity.getEntityName().endsWith("s"))
             msg = playerEntity.getEntityName() + "' shop";
@@ -62,12 +67,9 @@ public class HologramBuilderHandler {
                 else {
                     player.sendMessage(Text.literal("Purchase failed!").formatted(Formatting.RED), false);
                 }
-                //hologram.setElement(1, new EntityHologramElement(getEntityType(type == InteractionType.ATTACK).create(playerEntity.world)));
             }
         });
-
-
         hologram.show();
-
+        return hologram;
     }
 }

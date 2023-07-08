@@ -4,7 +4,6 @@ import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import net.fabricmc.api.ModInitializer;
-
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.command.argument.ItemStackArgumentType;
 import net.minecraft.server.command.CommandManager;
@@ -13,6 +12,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uranus.economyplayershop.command.AdminPlayerShopCommand;
 import uranus.economyplayershop.command.PlayerShopCommand;
+import uranus.economyplayershop.config.ConfigData;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 public class PlayerShopMain implements ModInitializer {
 	// This logger is used to write text to the console and the log file.
@@ -41,9 +45,30 @@ public class PlayerShopMain implements ModInitializer {
 
 				dispatcher.getRoot().addChild(playerShopNode);
 				playerShopNode.addChild(setNode);
-
-
 			}
 		});
+
+		initializeDatabase();
+
+	}
+
+	public void initializeDatabase(){
+		Connection db = null;
+		try {
+			ConfigData configData = new ConfigData();
+			String conn = "jdbc:sqlite:"+configData.databaseName;
+			db = DriverManager.getConnection(conn);
+			System.out.println("Connection to SQLite has been established.");
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		} finally {
+			try {
+				if (db != null) {
+					db.close();
+				}
+			} catch (SQLException ex) {
+				System.out.println(ex.getMessage());
+			}
+		}
 	}
 }

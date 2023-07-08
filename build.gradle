@@ -11,6 +11,7 @@ base {
 }
 
 repositories {
+	mavenCentral()
 	// Add repositories to retrieve artifacts from in here.
 	// You should only use this when depending on other mods because
 	// Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
@@ -54,6 +55,7 @@ loom {
 }
 
 dependencies {
+	implementation group:'org.xerial', name:'sqlite-jdbc', version:'3.42.0.0'
 	// To change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
