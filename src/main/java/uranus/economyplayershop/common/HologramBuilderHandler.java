@@ -25,12 +25,12 @@ public class HologramBuilderHandler {
     WorldHologram hologram;
 
     public static final double X_OFFSET = 0.5;
-    public static final int Y_OFFSET = 1;
+    public static final double Y_OFFSET = 1.0;
     public static final double Z_OFFSET = 0.5;
 
     public WorldHologram HologramBuild(CommandContext<ServerCommandSource> context, BlockPos blockPos){
         ServerPlayerEntity playerEntity = context.getSource().getPlayer();
-        //Entity entity = playerEntity;
+        //Entity entity = seller;
         hologram = new WorldHologram(playerEntity.getWorld(), new Vec3d(blockPos.getX()+X_OFFSET, blockPos.getY()+Y_OFFSET, blockPos.getZ()+Z_OFFSET));
         //System.out.println(entity.getEntityName());
         if(playerEntity.getEntityName().endsWith("s"))
@@ -54,7 +54,7 @@ public class HologramBuilderHandler {
                 super.onClick(hologram, player, type, hand, vec, entityId);
                 EconomyTransactionHandler economyTransactionHandler = new EconomyTransactionHandler();
 
-                int purchaseresult = economyTransactionHandler.buyFromPlayerShop(context, playerEntity, player, DoubleArgumentType.getDouble(context, "price"),
+                int purchaseresult = economyTransactionHandler.buyFromPlayerShop(playerEntity, player, DoubleArgumentType.getDouble(context, "price"),
                         item, IntegerArgumentType.getInteger(context, "quantity"), blockPos);
 
                 if(purchaseresult >= 0){
@@ -66,6 +66,44 @@ public class HologramBuilderHandler {
                 }
                 else {
                     player.sendMessage(Text.literal("Purchase failed!").formatted(Formatting.RED), false);
+                }
+            }
+        });
+        hologram.show();
+        return hologram;
+    }
+
+    public WorldHologram hologramRestore(ServerPlayerEntity seller, BlockPos blockPos, Item item, int quantity, double price) {
+        hologram = new WorldHologram(seller.getWorld(), new Vec3d(blockPos.getX() + X_OFFSET, blockPos.getY() + Y_OFFSET, blockPos.getZ() + Z_OFFSET));
+
+        if(seller.getEntityName().endsWith("s"))
+            msg = seller.getEntityName() + "' shop";
+        else
+            msg = seller.getEntityName() + "'s shop";
+        hologram.addText(Text.literal(msg));
+
+        hologram.addItemStack(item.getDefaultStack(), true);
+        hologram.addText(Text.literal(msg));
+        hologram.addText(Text.literal(msg+"$").formatted(Formatting.GREEN));
+
+        hologram.addElement(new CubeHitboxHologramElement(2, new Vec3d(0, 0.1, 0)) {
+            @Override
+            public void onClick(AbstractHologram hologram, ServerPlayerEntity buyer, InteractionType type, @Nullable Hand hand, @Nullable Vec3d vec, int entityId) {
+                super.onClick(hologram, buyer, type, hand, vec, entityId);
+                EconomyTransactionHandler economyTransactionHandler = new EconomyTransactionHandler();
+
+                int purchaseresult = economyTransactionHandler.buyFromPlayerShop(seller, buyer, price,
+                        item, quantity, blockPos);
+
+                if(purchaseresult >= 0){
+                    buyer.sendMessage(Text.literal("Purchase successful!").formatted(Formatting.GREEN), false);
+
+                    seller.sendMessage(Text.literal(buyer.getEntityName()+
+                            " bought from your shop. " + msg + "$ "+ "has been added to your account.").formatted(Formatting.GREEN));
+
+                }
+                else {
+                    buyer.sendMessage(Text.literal("Purchase failed!").formatted(Formatting.RED), false);
                 }
             }
         });

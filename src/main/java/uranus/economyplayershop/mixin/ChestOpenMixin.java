@@ -12,6 +12,7 @@ import net.minecraft.command.argument.ItemStackArgument;
 import net.minecraft.command.argument.ItemStackArgumentType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
@@ -23,7 +24,10 @@ import uranus.economyplayershop.common.CommonShopData;
 import uranus.economyplayershop.common.HologramBuilderHandler;
 import uranus.economyplayershop.common.ShopLoader;
 import uranus.economyplayershop.common.ShopRequest;
+import uranus.economyplayershop.db.ShopDbInterface;
 
+import java.io.*;
+import java.sql.SQLException;
 import java.util.LinkedList;
 
 @Mixin(ChestBlockEntity.class)
@@ -40,13 +44,20 @@ public class ChestOpenMixin extends BlockEntity {
         ShopRequest playerRequest = CommonShopData.getByPlayer(player);
         if (playerRequest != null) {
             CommandContext<ServerCommandSource> context = playerRequest.getPlayerContext();
+
             ItemStackArgument item = ItemStackArgumentType.getItemStackArgument(context, "item");
+
+            String itemName = item.asString();
+            int quantity = IntegerArgumentType.getInteger(context, "quantity");
+            double price = DoubleArgumentType.getDouble(context, "price");
+
             String msg = String.format(
                     "Player shop set for %d %s at %.2f",
-                    IntegerArgumentType.getInteger(context, "quantity"),
-                    item.asString(),
-                    DoubleArgumentType.getDouble(context, "price")
+                    quantity,
+                    itemName,
+                    price
             );
+
             context.getSource().sendFeedback(Text.literal(msg).formatted(Formatting.GREEN), true);
 
             HologramBuilderHandler hologramBuilderHandler = new HologramBuilderHandler();
@@ -56,6 +67,23 @@ public class ChestOpenMixin extends BlockEntity {
             ((LinkedList<ShopLoader>)ShopLoader.allShops).addLast(shopLoader);
 
             System.out.printf("Accepting %s's request to setup their shop\n", player.getName().getString());
+
+            try {
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                ObjectOutputStream os = new ObjectOutputStream(baos);
+                os.writeObject(worldHologram);
+                byte[] hologramBytes = baos.toByteArray();
+
+                if (ShopDbInterface.addShopToDb(hologramBytes))
+                    System.out.printf("Added %s's %s shop", player.getEntityName(), itemName);
+                else
+                    System.out.printf("Could not add %s's %s shop", player.getEntityName(), itemName);
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
             CommonShopData.removeByPlayer(player);
         }
     }

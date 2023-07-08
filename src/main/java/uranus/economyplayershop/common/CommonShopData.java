@@ -3,16 +3,19 @@ package uranus.economyplayershop.common;
 import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledFuture;
 
 public class CommonShopData {
+    /**
+     * Database connection
+     */
+    public static Connection DB;
+
     final static private List<ShopRequest> requests = new ArrayList<>();
 
     public static ShopRequest getByPlayer(PlayerEntity player) {

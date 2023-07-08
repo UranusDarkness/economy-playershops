@@ -14,7 +14,7 @@ import net.minecraft.util.math.BlockPos;
 
 public class EconomyTransactionHandler {
     Economy economy = Injectors.INSTANCE.getAutoInjector("grandeconomy").getInstance(Economy.class);
-    public int buyFromPlayerShop(CommandContext<ServerCommandSource> context, ServerPlayerEntity seller, ServerPlayerEntity buyer, double price, Item item, int quantity, BlockPos chestPos){
+    public int buyFromPlayerShop(ServerPlayerEntity seller, ServerPlayerEntity buyer, double price, Item item, int quantity, BlockPos chestPos){
 
         if(economy.getBalance(buyer.getUuid(), true) >= price){
 
@@ -24,9 +24,9 @@ public class EconomyTransactionHandler {
 
             if(result >= 0){
                 //remove from buyer's balance
-                economy.takeFromBalance(buyer.getUuid(), DoubleArgumentType.getDouble(context, "price"), true);
+                economy.takeFromBalance(buyer.getUuid(), price, true);
                 //add to seller's balance
-                economy.addToBalance(seller.getUuid(), DoubleArgumentType.getDouble(context, "price"), true);
+                economy.addToBalance(seller.getUuid(), price, true);
                 //add to buyer's inventory
                 buyer.getInventory().offerOrDrop(new ItemStack(item, quantity));
                 return 1;
