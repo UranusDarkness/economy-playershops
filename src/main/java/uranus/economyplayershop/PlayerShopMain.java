@@ -79,17 +79,18 @@ public class PlayerShopMain implements ModInitializer {
 			CommonShopData.DB = db;
 
 			// Create necessary tables
-			String sql = "CREATE TABLE IF NOT EXISTS player(" +
+			String sql1 = "CREATE TABLE IF NOT EXISTS player(" +
 						"uuid VARCHAR(36) PRIMARY KEY," +
 						"username VARCHAR(16)" +
-					");" +
-					"CREATE TABLE IF NOT EXISTS shop(" +
-						"shop_id INTEGER PRIMARY KEY AUTOINCREMENT," +
-						"hologram BLOB" +
-					");";
+					")";
 
+			String sql2 = "CREATE TABLE IF NOT EXISTS shop(" +
+					"shop_id INTEGER PRIMARY KEY AUTOINCREMENT," +
+					"hologram BLOB" +
+					");";
 			Statement stmt = db.createStatement();
-			stmt.execute(sql);
+			stmt.execute(sql1);
+			stmt.execute(sql2);
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
